@@ -24,7 +24,7 @@ class Table:
     def __init__(self, data):
         self.__data = data
 
-        self.__class__.__tables[self.name] = self
+        self.add_table(self)
 
     @property
     def name(self):
@@ -37,6 +37,9 @@ class Table:
     @property
     def charset(self):
         return self.__data.get('charset', 'utf8')
+
+    def itercolumns(self):
+        return iter(self.__data['columns'])
 
     def create_sql(self, force=False):
         sql = (
@@ -87,9 +90,24 @@ class Table:
     def get_table(cls, name):
         return cls.__tables[name]
 
+    @classmethod
+    def add_table(cls, table):
+        if table.name in cls.__tables:
+            raise ValueError('%s already in tables' % table.name)
+
+        cls.__tables[table.name] = table
+
+    @classmethod
+    def clear(cls):
+        cls.__tables.clear()
+
 
 def get_table(name):
     return Table.get_table(name)
+
+
+def clear_table():
+    return Table.clear()
 
 
 def create_table(conn, table):
