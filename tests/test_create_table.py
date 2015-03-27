@@ -1,15 +1,22 @@
 import unittest
 
-from enzyme.table import define_table, get_table, create_table, column
-
-
-define_table(
-    'users',
-    column.primary_id(),
-    column.string('username', unique=True),
-    column.integer('age'),
-    column.meta_times()
+from enzyme.table import (
+    define_table, get_table, create_table, column, clear_table
 )
+
+
+def setUpModule():
+    define_table(
+        'users',
+        column.primary_id(),
+        column.string('username', unique=True),
+        column.integer('age'),
+        column.meta_times()
+    )
+
+
+def tearDownModule():
+    clear_table()
 
 
 class MockDb:

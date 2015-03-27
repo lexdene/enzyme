@@ -4,15 +4,18 @@ from enzyme import builders
 from enzyme.table import define_table, clear_table, column
 
 
-clear_table()
+def setUpModule():
+    define_table(
+        'users',
+        column.primary_id(),
+        column.string('username', unique=True),
+        column.integer('age'),
+        column.meta_times()
+    )
 
-define_table(
-    'users',
-    column.primary_id(),
-    column.string('username', unique=True),
-    column.integer('age'),
-    column.meta_times()
-)
+
+def tearDownModule():
+    clear_table()
 
 
 class MockDb:
