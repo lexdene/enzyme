@@ -295,7 +295,7 @@ class LinkedBuilder(object):
         )
 
         result = self.__db.execute(
-            'update {table} set {data} {where}'.format(
+            'update {table} set {data}{where}'.format(
                 **format_params
             ),
             self.__params
