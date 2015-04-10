@@ -37,9 +37,7 @@ class MetaModel(type):
         )
         result = builder.where(kwargs).find()
 
-        model = self()
-        model.load_data(result)
-        return model
+        return self.load_data(result)
 
 
 class Model(metaclass=MetaModel):
@@ -47,8 +45,14 @@ class Model(metaclass=MetaModel):
         self.__loaded_data = {}
         self.__setted_data = kwargs
 
-    def load_data(self, data):
+    def _load_data(self, data):
         self.__loaded_data = data
+
+    @classmethod
+    def load_data(cls, data):
+        m = cls()
+        m._load_data(data)
+        return m
 
     def __setattr__(self, name, value):
         if name.startswith('_Model__'):
@@ -81,3 +85,20 @@ class Model(metaclass=MetaModel):
             self.__setted_data = {}
 
             return True
+
+
+class ModelSetBuilder:
+    def __init__(self, model_class, conn):
+        self.__model_class = model_class
+        self.__builder = builders.LinkedBuilder(
+            model_class.table_name,
+            conn
+        )
+
+    def select(self):
+        result = self.__builder.select()
+
+        return list(
+            self.__model_class.load_data(data)
+            for data in result
+        )
