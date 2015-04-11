@@ -51,8 +51,8 @@ class MockDb:
         return self.__sql_log
 
 
-class ModelTestCase(unittest.TestCase):
-    def testGetAndUpdate(self):
+class MultiModelTestCase(unittest.TestCase):
+    def testSelectMulti(self):
         conn = MockDb()
 
         users = ModelSetBuilder(User, conn).select()
