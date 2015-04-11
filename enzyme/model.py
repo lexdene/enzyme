@@ -39,6 +39,17 @@ class MetaModel(type):
 
         return self.load_data(result)
 
+    def __getattr__(self, name):
+        def wrap(*argv, **kwargs):
+            builder = ModelSetBuilder(
+                self,
+                db.Db.get_singleton()
+            )
+            func = getattr(builder, name)
+            return func(*argv, **kwargs)
+
+        return wrap
+
 
 class Model(metaclass=MetaModel):
     def __init__(self, **kwargs):

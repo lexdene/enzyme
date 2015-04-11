@@ -2,6 +2,7 @@ import unittest
 
 from enzyme.table import define_table, clear_table, column
 from enzyme.model import Model, ModelSetBuilder
+from enzyme.db import Db
 
 
 def setUpModule():
@@ -76,6 +77,31 @@ class MultiModelTestCase(unittest.TestCase):
                     '`users`.`deleted_at`\n'
                     'from `users` as users'
                 ),
+                (
+                    'select\n'
+                    '`users`.`id`,\n'
+                    '`users`.`username`,\n'
+                    '`users`.`age`,\n'
+                    '`users`.`created_at`,\n'
+                    '`users`.`updated_at`,\n'
+                    '`users`.`deleted_at`\n'
+                    'from `users` as users\n'
+                    'where id = %(id)s\n'
+                    'limit 1'
+                ),
+            ],
+            conn.sql_log()
+        )
+
+    def testSelectMultiByModelClass(self):
+        conn = MockDb()
+        Db.set_singleton(conn)
+
+        users = User.where(id=1).limit(1).select()
+        self.assertEqual(2, len(users))
+
+        self.assertEqual(
+            [
                 (
                     'select\n'
                     '`users`.`id`,\n'
