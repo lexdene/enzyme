@@ -102,3 +102,14 @@ class ModelSetBuilder:
             self.__model_class.load_data(data)
             for data in result
         )
+
+    def __getattr__(self, name):
+        if hasattr(self.__builder, name):
+            def wrap(*argv, **kwargs):
+                func = getattr(self.__builder, name)
+                func(*argv, **kwargs)
+
+                return self
+            return wrap
+
+        return super(ModelSetBuilder, self).__getattr__(name)

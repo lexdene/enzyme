@@ -61,16 +61,33 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(1, users[0].id)
         self.assertEqual(2, users[1].id)
 
+        users = ModelSetBuilder(User, conn).where(id=1).limit(1).select()
+        self.assertEqual(2, len(users))
+
         self.assertEqual(
             [
-                'select\n'
-                '`users`.`id`,\n'
-                '`users`.`username`,\n'
-                '`users`.`age`,\n'
-                '`users`.`created_at`,\n'
-                '`users`.`updated_at`,\n'
-                '`users`.`deleted_at`\n'
-                'from `users` as users'
+                (
+                    'select\n'
+                    '`users`.`id`,\n'
+                    '`users`.`username`,\n'
+                    '`users`.`age`,\n'
+                    '`users`.`created_at`,\n'
+                    '`users`.`updated_at`,\n'
+                    '`users`.`deleted_at`\n'
+                    'from `users` as users'
+                ),
+                (
+                    'select\n'
+                    '`users`.`id`,\n'
+                    '`users`.`username`,\n'
+                    '`users`.`age`,\n'
+                    '`users`.`created_at`,\n'
+                    '`users`.`updated_at`,\n'
+                    '`users`.`deleted_at`\n'
+                    'from `users` as users\n'
+                    'where id = %(id)s\n'
+                    'limit 1'
+                ),
             ],
             conn.sql_log()
         )
