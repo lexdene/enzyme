@@ -1,8 +1,7 @@
 import unittest
 
-from enzyme.table import (
-    define_table, get_table, create_table, column, clear_table
-)
+from enzyme.table import (clear_table, column, create_table, define_table,
+                          get_table)
 
 
 def setUpModule():

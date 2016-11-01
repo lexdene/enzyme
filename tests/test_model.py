@@ -1,8 +1,8 @@
 import unittest
 
-from enzyme.table import define_table, clear_table, column
-from enzyme.model import Model
 from enzyme.db import Db
+from enzyme.model import Model
+from enzyme.table import clear_table, column, define_table
 
 
 def setUpModule():
